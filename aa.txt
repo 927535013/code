@@ -1,5 +1,0 @@
-.
-..
-aa.txt
-.git
-README.md
