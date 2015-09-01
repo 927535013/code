@@ -2,6 +2,10 @@
 {%block title%}登录{%endblock%}s
 {% block content %}
         <h2> 欢迎来到黑板客记账站点 </h2>
+        {%if error%}
+	    <p>{{username}} {{error}}</p>
+        {%endif%}
+
         <form action="" method="post" class="form"  role="form">
         {% csrf_token %}
 
