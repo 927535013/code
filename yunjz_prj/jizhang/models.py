@@ -15,7 +15,7 @@ class Category(models.Model):
     isIncome = models.BooleanField(choices=INCOME_CHOICES, verbose_name=u'是否收入')
     user = models.ForeignKey(User,verbose_name=u'所属用户')
 
-    def __str__(self):
+    def __unicode__(self):
         return self.level()+self.name
 
     def get_absolute_url(self):
@@ -48,7 +48,7 @@ class Item(models.Model):
     pub_date = models.DateField(verbose_name=u'日期')
     category = models.ForeignKey(Category,verbose_name=u'分类', related_name='items')  
 
-    def __str__(self):
+    def __unicode__(self):
         return str(self.price)
 
     def get_absolute_url(self):
