@@ -9,10 +9,7 @@ from django.core.urlresolvers import reverse
 
 #myApp package
 from accounts.forms import  RegisterForm
-
-@login_required
-def index(request):
-    return render(request,"accounts/index.html")
+from jizhang.data_format_func import auto_gen_categories
 
 
 def register(request):
@@ -24,7 +21,8 @@ def register(request):
         if form.is_valid():
             form.save()
             if _login(request,form.cleaned_data['username'],form.cleaned_data['password'],template_var):
-                return HttpResponseRedirect("/accounts/index")
+                auto_gen_categories(request.user.id)
+                return HttpResponseRedirect(reverse("jizhang:items"))
 
     template_var["form"]=form 
              
@@ -42,7 +40,7 @@ def login(request):
                 tmp = request.GET['next']
                 return HttpResponseRedirect(tmp)
             except:
-                return HttpResponseRedirect("/accounts/index")
+                return HttpResponseRedirect(reverse("jizhang:items"))
  
         template_var.update({"username":username}) 
     return render(request,"accounts/login.html",template_var)

@@ -1,24 +1,12 @@
 {% extends "base_yunjz.html" %}
-{%block title%}新建/编辑收支{%endblock%}
+{%block title%}查找收支{%endblock%}
 
 
 {%block extra_header%}
 <script>  
-
-
 $(function(){
     $( ".datepicker" ).datepicker({dateFormat: 'yy-mm-dd'});
 });
-
-$(function(){ 
-    $( "#id_comment" ).autocomplete({
-      source: "/jizhang/ajax/autocomplete_comments",
-      minLength: 2,
-      select: function( event, ui ) {
-        $("#id_category").val(ui.item.category_id);
-      }
-    });
-});   
 </script>
 {%endblock%}
 

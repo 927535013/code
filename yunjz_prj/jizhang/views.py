@@ -3,17 +3,21 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.db.models import Sum, Count, Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import csv, json
 
 #myApp package
 from jizhang.models import Item, Category
 from jizhang.forms import ItemForm, CategoryForm, NewCategoryForm, FindItemForm
 from jizhang.data_format_func import get_sorted_categories
 
-# shiyan7
-
+# shiyan9
+# ajax  --done, views.py, new_item.html, jslib
+# register auto gen  --done, accounts/views.py,tests.py, jizhang/data_format_func,
+# datepicker --done, new_item.html, find_item.html
+# find pages --done, views.py, find_item_results.html
 
 PAGE_ITEM_NUM = 5
     
@@ -192,10 +196,40 @@ def find_item(request):
                         else:
                             qset = qset|config_qset(every_query)
 
-                    results = item_category.filter(qset).distinct().order_by('-pub_date')
-
-
-                return render(request,'jizhang/items.html', {'items': results})
+                    results = item_category.filter(qset).distinct()
+                    
+                p = Paginator(results , PAGE_ITEM_NUM)
+                item_pages = []
+                for i in p.page_range:
+                    item_pages.append(p.page(i))
+                    
+                return render(request,'jizhang/find_item_results.html', {'item_pages': item_pages})
     else:
         form = FindItemForm(request,initial={'start_date':None,'end_date':timezone.now().date()})
-    return render(request,'jizhang/new_item.html',{'form':form})
+    return render(request,'jizhang/find_item.html',{'form':form})
+    
+    
+
+@login_required    
+def autocomplete_comments(request):
+    term = request.GET.get('term')
+
+    if not term:
+        items=Item.objects.filter(category__user__username=request.user.username)[:12]
+    else:
+        items=Item.objects.filter(category__user__username=request.user.username).filter(comment__icontains=term)[:12]
+    
+    print items
+    json_send = []
+    have_track = []
+    for item in items:
+        if [item.comment,item.category.id] not in have_track:
+            have_track.append([item.comment,item.category.id])
+            json_send.append({"id": item.id,
+                             "category_id": item.category.id,
+                             "label": item.comment+"--"+item.category.name,
+                             "value": item.comment
+                             })
+                             
+    print have_track,json_send
+    return HttpResponse(json.dumps(json_send), content_type="application/json") 

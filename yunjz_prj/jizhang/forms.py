@@ -76,14 +76,14 @@ class ItemForm(ModelForm):
         self.fields['category'].widget = forms.Select(attrs={'class':"form-control"})
         self.fields['category'].choices = [(c.id,c) for c in categories]
         
-        self.fields['pub_date'].widget = forms.DateInput(attrs={'class':"form-control"})
+        self.fields['pub_date'].widget = forms.DateInput(attrs={'class':"datepicker form-control"})
         self.fields['price'].widget = forms.TextInput(attrs={'class':"form-control"})
         self.fields['comment'].widget = forms.TextInput(attrs={'class':"form-control"})
 
 
 class FindItemForm(forms.Form):	
-	start_date = forms.DateField(label=u'开始时间',required=False, widget=forms.DateInput(attrs={'size': 20,'class':"form-control"}))
-	end_date = forms.DateField(label=u'结束时间',widget=forms.DateInput(attrs={'size': 20,'class':"form-control"}))
+	start_date = forms.DateField(label=u'开始时间',required=False, widget=forms.DateInput(attrs={'size': 20,'class':"datepicker form-control"}))
+	end_date = forms.DateField(label=u'结束时间',widget=forms.DateInput(attrs={'size': 20,'class':"datepicker form-control"}))
 	category = forms.ChoiceField(label=u'选择分类',required=False)
 	query = forms.CharField(label=u'备注关键字',required=False,widget=forms.TextInput(attrs={'class':"form-control"}))	
 	

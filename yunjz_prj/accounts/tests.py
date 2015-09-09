@@ -46,7 +46,7 @@ class LoginPageTestCase(TestCase):
         response = self.client.post(reverse('accounts:login'),{'username': self.user.username, 'password': PASSWORD})
         #print response.content
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response,reverse('accounts:index'))
+        self.assertRedirects(response,reverse('jizhang:items'))
         
     def test_login_post_noactive(self):
         # POST request
@@ -68,13 +68,13 @@ class IndexPageTestCase(TestCase):
         
     def test_login_success(self):    
         self.assertEqual(True,self.client.login(username= self.user.username, password= PASSWORD))
-        response = self.client.get(reverse('accounts:index'))
+        response = self.client.get(reverse('jizhang:items'))
         self.assertEqual(response.status_code, 200)       
 
     def test_nologin(self):    
-        response = self.client.get(reverse('accounts:index'))
+        response = self.client.get(reverse('jizhang:items'))
         self.assertEqual(response.status_code, 302)  
-        self.assertRedirects(response, '/accounts/login/?next=/accounts/index')
+        self.assertRedirects(response, '/accounts/login/?next=/jizhang/')
         
 
 class RegisterFormTestCase(TestCase):   
@@ -109,5 +109,5 @@ class RegisterPageTestCase(TestCase):
     def test_correct(self):
         response = self.client.post(reverse('accounts:register'),self.correct_data)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response,reverse('accounts:index')) 
+        self.assertRedirects(response,reverse('jizhang:items')) 
         self.assertEqual(len(User.objects.all()),1)       
