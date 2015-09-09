@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^$', views.items, name="items"),
     url(r'^(?P<pk>\d+)/edit/$', views.edit_item, name='edit_item'),
     url(r'^new/$',views.new_item,name='new_item'),
-
+    url(r'^find/$',views.find_item,name='find_item'),
     #categorys
     url(r'^categories/$', views.categories, name='categories'),
     url(r'^categories/(?P<pk>\d+)/$', views.show_category, name='show_category'),    

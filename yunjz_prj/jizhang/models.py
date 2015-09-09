@@ -47,7 +47,10 @@ class Item(models.Model):
     comment = models.CharField(max_length=200, blank = True, verbose_name=u'注释')
     pub_date = models.DateField(verbose_name=u'日期')
     category = models.ForeignKey(Category,verbose_name=u'分类', related_name='items')  
-
+    
+    class Meta:
+        ordering = ["-pub_date"]
+        
     def __unicode__(self):
         return str(self.price)
 

@@ -80,3 +80,31 @@ class ItemForm(ModelForm):
         self.fields['price'].widget = forms.TextInput(attrs={'class':"form-control"})
         self.fields['comment'].widget = forms.TextInput(attrs={'class':"form-control"})
 
+
+class FindItemForm(forms.Form):	
+	start_date = forms.DateField(label=u'开始时间',required=False, widget=forms.DateInput(attrs={'size': 20,'class':"form-control"}))
+	end_date = forms.DateField(label=u'结束时间',widget=forms.DateInput(attrs={'size': 20,'class':"form-control"}))
+	category = forms.ChoiceField(label=u'选择分类',required=False)
+	query = forms.CharField(label=u'备注关键字',required=False,widget=forms.TextInput(attrs={'class':"form-control"}))	
+	
+	def __init__(self, request, *args, **kwargs):
+		super(FindItemForm, self).__init__(*args, **kwargs)
+		categories=get_sorted_categories(request.user.username)
+					
+		self.fields['category'].widget = forms.Select(attrs={'class':"form-control"})
+		self.fields['category'].choices = [('',u'所有分类')] + [(c.id,c) for c in categories]	
+
+	def clean_query(self):
+		if not self.cleaned_data['start_date']:
+			if not self.cleaned_data['query']:
+				raise forms.ValidationError(u"开始时间和关键字至少要有一个.")
+		return self.cleaned_data['query']
+        
+	def clean_end_date(self):
+		if not self.cleaned_data['start_date']:
+			return self.cleaned_data['end_date']
+		else:
+			if self.cleaned_data['end_date'] > self.cleaned_data['start_date']:
+				return self.cleaned_data['end_date']
+			else:
+				raise forms.ValidationError(u"结束时间需要晚于开始时间.")	

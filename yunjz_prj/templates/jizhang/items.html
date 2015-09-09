@@ -1,7 +1,21 @@
 
 {% extends "base_yunjz.html" %}
 {%block title%}收支列表{%endblock%}
-        
+
+{%block extra_header%}
+<script>
+    $(function () {
+        $("#all").click(function () {
+            var checked_status = this.checked;
+            $("input[name=del_id]").each(function () {
+                this.checked = checked_status;
+            });
+        });
+    });
+</script>
+{% endblock%}
+
+
 {% block content %}
 
 {% include "welcome.html" %}
@@ -11,28 +25,30 @@
             <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-floppy-save"></span> 导出</a>
             <a href="#"    class="btn btn-primary" role="button"><span class="glyphicon glyphicon-floppy-open"></span> 导入</a>
             <!-- Button trigger modal -->
-            <a  href="#"    class="btn btn-danger"  role="button"><span class="glyphicon glyphicon-trash"></span> 删除</a>           
+            <a href="javascript:document.itemsForm.submit();" class="btn btn-danger"  role="button"><span class="glyphicon glyphicon-trash"></span> 删除</a>           
 
         </div>
 
-        <form method="post" action="">
+        <form method="post" action="" name="itemsForm">
         {% csrf_token %}
 
             <table class="table table-striped">
-
-                <tr class="info"><td data-toggle="tooltip" data-placement="left" title="按时间排序"><strong><a href="{%url 'jizhang:items'%}">时间</a></strong></td>
-                    <td data-toggle="tooltip" data-placement="left" title="按价格排序">价格(元)</td>
-                    <td><strong>分类</strong></td>
-                    <td><strong>备注</strong></td>
-                </tr>
-
                 {% if items %}
+                    <tr class="info"><td data-toggle="tooltip" data-placement="left" title="按时间排序"><strong><a href="{%url 'jizhang:items'%}">时间</a></strong></td>
+                        <td data-toggle="tooltip" data-placement="left" title="按价格排序">价格(元)</td>
+                        <td><strong>分类</strong></td>
+                        <td><strong>备注</strong></td>
+                        <td><strong><input type="checkbox" id="all" />全选</strong></td>
+                    </tr>
+
+                
                     {% for item in items %}
                     <tr class="{% cycle ,active %}">
                         <td data-toggle="tooltip" data-placement="left" title="编辑该帐单"><a href="{{item.get_absolute_url}}">{{ item.pub_date|date:"Y-m-d"}}</a></td>
                         <td data-toggle="tooltip" data-placement="left" title="编辑该帐单"><a href="{{item.get_absolute_url}}">{{ item.get_price}}</a></td>
                         <td data-toggle="tooltip" data-placement="left" title="显示该分类下帐单"><a href="{{item.category.get_items_url}}"> {{ item.category}}</a> </td>
                         <td> {{ item.comment}} </td>
+                        <td><input type='checkbox' name="del_id" value="{{item.id}}"></td>
                     </tr>
                     {% endfor %}
                 {% else %}
@@ -40,7 +56,26 @@
                 {% endif %}
 
             </table>
-
+            <ul class="pagination">
+                {% if items.has_previous %}
+                   <li><a href="?page={{ items.previous_page_number }}">&laquo;</a></li>
+                {% else%}
+                   <li class="disable"><a>&laquo;</a></li>
+                {% endif %}
+                
+                {% for i in page_num_list %} 
+                    {%if i > 0%}
+                    <li {%ifequal items.number forloop.counter%}class="active"{%endifequal%}><a href="?page={{ i }}">{{i}}</a></li>
+                    {%elif i == 0%}
+                    <li><a><strong>...</strong></a></li>
+                    {%endif%}
+                {% endfor %}
+                {% if items.has_next %}
+                   <li><a href="?page={{ items.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                   <li class="disable"><a>&raquo;</a></li>
+                {% endif %}
+            </ul>
         </form>
 
         {% include "jizhang/footer_button.html" %}
