@@ -6,4 +6,5 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^exam',views.exam,name='exam'),
+    url(r'^getForm',views.getForm,name='getForm'),
 )

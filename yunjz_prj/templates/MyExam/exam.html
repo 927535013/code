@@ -4,10 +4,21 @@
     <head>
         <title> 我的测试</title>
     </head>
+    {% include "welcome.html" %}
     <body>
         <h1>
             hello Django
         </h1>
         {{username}}
+
+        <form action="" method="post" class="form"  role="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>什么:</label>
+                <input class="form-control" id="id_username" name="testInput" type="text" value="{{testInput}}"/>
+            </div>
+
+            <button id='id_commit' type='submit' class="btn btn-default" onclick='javascrtpt:window.location.href="{% url 'MyExam:getForm' %}"'>跳转</button>
+        </form>
     </body>
 </html>

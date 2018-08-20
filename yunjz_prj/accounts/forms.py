@@ -48,7 +48,7 @@ class RegisterForm(forms.Form):
         
     def clean(self):
         """验证其他非法"""
-        cleaned_data = super(RegisterForm, self).clean()
+        cleaned_data = super(RegisterForm, sellf).clean()
 
         if cleaned_data.get("password") == cleaned_data.get("username"):
             raise forms.ValidationError(u"用户名和密码不能一样")
